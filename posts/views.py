@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view,APIView
 from .models import Post
 from .serializer import PostSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
 
 
 # def homepage(request:HttpRequest):
@@ -86,6 +87,19 @@ class listcreatepost(GenericAPIView,
      
      def post(self,request:Request,*args,**kwargs):
           return self.create(request,*args,**kwargs)
+
+# class postviewset(viewsets.ViewSet):
+
+#      def list(self,request:Request):
+#           queryset=Post.objects.all()
+#           serializer=PostSerializer(instance=queryset,many=True)
+#           return Response(data=serializer.data,status=status.HTTP_200_OK)
+     
+#      def retrieve(self,request:Request,pk=None):
+#           queryset=get_object_or_404(Post,pk=pk)
+#           serializer=PostSerializer(instance=queryset)
+#           return Response(data=serializer.data,status=status.HTTP_200_OK)
+
 
 
 # @api_view(http_method_names=['GET'])
