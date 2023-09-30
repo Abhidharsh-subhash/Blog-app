@@ -2,11 +2,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status,mixins
 from rest_framework.generics import GenericAPIView
-from rest_framework.decorators import api_view,APIView
+from rest_framework.decorators import api_view,APIView,permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializer import PostSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from accounts.serializer import CurrentUserPostsSerializer
 
 
 # def homepage(request:HttpRequest):
@@ -81,6 +83,11 @@ class listcreatepost(GenericAPIView,
                     mixins.CreateModelMixin):
      serializer_class = PostSerializer
      queryset = Post.objects.all()
+
+     #custom mixin hook for create method
+     def perform_create(self, serializer):
+          serializer.save(author=self.request.user)
+          return super().perform_create(serializer)
      
      def get(self,request:Request,*args,**kwargs):
           return self.list(request,*args,**kwargs)
@@ -169,6 +176,7 @@ class retrievedeleteupdatepost(GenericAPIView,
                               mixins.DestroyModelMixin):
      serializer_class = PostSerializer
      queryset = Post.objects.all()
+     permission_classes=[IsAuthenticated]
      def get(self,request:Request,*args,**kwargs):
           return self.retrieve(request,*args,**kwargs)
      
@@ -177,3 +185,12 @@ class retrievedeleteupdatepost(GenericAPIView,
      
      def delete(self,request:Request,*args,**kwargs):
           return self.destroy(request,*args,**kwargs)
+# "hooks" in mixins refer to predefined methods or functions within the mixin class,These hooks allow developers 
+# to inject custom behavior into the mixin's functionality,
+
+@api_view(http_method_names=['GET'])
+@permission_classes([IsAuthenticated])
+def get_posts_for_current_user(request:Request):
+     user=request.user
+     serializer=CurrentUserPostsSerializer(instance=user,context={'request':request})
+     return Response(data=serializer.data,status=status.HTTP_200_OK)

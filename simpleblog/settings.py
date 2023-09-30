@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'accounts',
     #third party apps
     'rest_framework',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
+    'rest_framework_simplejwt',
 ]
 
 AUTH_USER_MODEL='accounts.User'

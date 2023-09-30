@@ -25,3 +25,10 @@ class SignUpSerializer(serializers.ModelSerializer):
         user.save()
         Token.objects.create(user=user)
         return user
+    
+class CurrentUserPostsSerializer(serializers.ModelSerializer):
+    # posts=serializers.StringRelatedField(many=True)
+    posts=serializers.HyperlinkedRelatedField(many=True,view_name='retrievedeleteupdatepost',queryset=User.objects.all())
+    class Meta:
+        model=User
+        fields=['id','email','username','posts']

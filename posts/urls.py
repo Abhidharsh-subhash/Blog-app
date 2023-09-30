@@ -8,4 +8,5 @@ urlpatterns = [
     # path('retrievedeleteupdatepost/<int:post_id>/',views.retrievedeleteupdatepost.as_view(),name='retrievedeleteupdatepost'),
     # path('Updatepost/<int:postid>/',views.Updatepost,name='Updatepost'),
     # path('Deletepost/<int:postid>/',views.Deletepost,name='Deletepost'),
+    path('userposts/',views.get_posts_for_current_user,name='userposts'),
 ]
