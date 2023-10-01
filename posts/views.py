@@ -3,12 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status,mixins
 from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import api_view,APIView,permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny,IsAuthenticatedOrReadOnly,IsAdminUser
 from .models import Post
 from .serializer import PostSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from accounts.serializer import CurrentUserPostsSerializer
+from .permissions import ReadOnly,AuthorOrReadOnly
 
 
 # def homepage(request:HttpRequest):
@@ -29,6 +30,7 @@ from accounts.serializer import CurrentUserPostsSerializer
 # ]
 
 @api_view(http_method_names=['GET','POST'])
+@permission_classes([AllowAny])
 def homepage(request:Request):
 
     if request.method == 'POST':
@@ -82,6 +84,8 @@ class listcreatepost(GenericAPIView,
                     mixins.ListModelMixin,
                     mixins.CreateModelMixin):
      serializer_class = PostSerializer
+     permission_classes=[ReadOnly]
+     # permission_classes=[IsAuthenticatedOrReadOnly]#when we use this we dont need to be authenticated for reading the data's.
      queryset = Post.objects.all()
 
      #custom mixin hook for create method
@@ -176,7 +180,7 @@ class retrievedeleteupdatepost(GenericAPIView,
                               mixins.DestroyModelMixin):
      serializer_class = PostSerializer
      queryset = Post.objects.all()
-     permission_classes=[IsAuthenticated]
+     permission_classes=[AuthorOrReadOnly]
      def get(self,request:Request,*args,**kwargs):
           return self.retrieve(request,*args,**kwargs)
      
