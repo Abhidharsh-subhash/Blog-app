@@ -198,3 +198,24 @@ def get_posts_for_current_user(request:Request):
      user=request.user
      serializer=CurrentUserPostsSerializer(instance=user,context={'request':request})
      return Response(data=serializer.data,status=status.HTTP_200_OK)
+
+class ListPostForAuthor(GenericAPIView,mixins.ListModelMixin):
+     serializer_class=PostSerializer
+     permission_classes=[IsAuthenticated]
+     queryset=Post.objects.all()
+
+     # posts by the particular user in accordance with the jwt token
+     # def get_queryset(self):
+     #      return Post.objects.filter(author=self.request.user)
+
+     #posts by the username as parameter
+     def get_queryset(self):
+          # username=self.kwargs.get('username')# if we are passing the username as parameter mentioned in url
+          username=self.request.query_params.get('username') or None
+          if username is not None:
+               return Post.objects.filter(author__username=username)
+          else:
+               return Post.objects.all()
+
+     def get(self,request,*args,**kwargs):
+          return self.list(request,*args,**kwargs)

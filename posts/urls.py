@@ -9,4 +9,5 @@ urlpatterns = [
     # path('Updatepost/<int:postid>/',views.Updatepost,name='Updatepost'),
     # path('Deletepost/<int:postid>/',views.Deletepost,name='Deletepost'),
     path('userposts/',views.get_posts_for_current_user,name='userposts'),
+    path('ListPostForAuthor/',views.ListPostForAuthor.as_view(),name='ListPostForAuthor'),
 ]
