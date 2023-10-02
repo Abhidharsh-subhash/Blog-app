@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from .tokens import create_jwt_pair_for_user
+from drf_yasg.utils import swagger_auto_schema
 
 # Create your views here.
 
@@ -15,6 +16,7 @@ class SignUpView(GenericAPIView):
     permission_classes=(AllowAny,)
     serializer_class=SignUpSerializer
     
+    @swagger_auto_schema(operation_summary='New user signup')
     def post(self,request:Request):
         data=request.data
         serializer=self.serializer_class(data=data)
@@ -29,6 +31,7 @@ class SignUpView(GenericAPIView):
     
 class LoginView(APIView):
     permission_classes=(AllowAny,)
+    @swagger_auto_schema(operation_summary='User login')
     def post(self,request:Request):
         email=request.data.get('email')
         password=request.data.get('password')

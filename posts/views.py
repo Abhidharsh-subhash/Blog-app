@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from accounts.serializer import CurrentUserPostsSerializer
 from .permissions import ReadOnly,AuthorOrReadOnly
+from drf_yasg.utils import swagger_auto_schema
 
 
 # def homepage(request:HttpRequest):
@@ -93,9 +94,11 @@ class listcreatepost(GenericAPIView,
           serializer.save(author=self.request.user)
           return super().perform_create(serializer)
      
+     @swagger_auto_schema(operation_summary='List all the posts')
      def get(self,request:Request,*args,**kwargs):
           return self.list(request,*args,**kwargs)
      
+     @swagger_auto_schema(operation_summary='Create a new post')
      def post(self,request:Request,*args,**kwargs):
           return self.create(request,*args,**kwargs)
 
@@ -181,12 +184,15 @@ class retrievedeleteupdatepost(GenericAPIView,
      serializer_class = PostSerializer
      queryset = Post.objects.all()
      permission_classes=[AuthorOrReadOnly]
+     @swagger_auto_schema(operation_summary='Retrieve a post by id')
      def get(self,request:Request,*args,**kwargs):
           return self.retrieve(request,*args,**kwargs)
      
+     @swagger_auto_schema(operation_summary='Update a post by id')
      def put(self,request:Request,*args,**kwargs):
           return self.update(request,*args,**kwargs)
      
+     @swagger_auto_schema(operation_summary='Delete a post by id')
      def delete(self,request:Request,*args,**kwargs):
           return self.destroy(request,*args,**kwargs)
 # "hooks" in mixins refer to predefined methods or functions within the mixin class,These hooks allow developers 
@@ -217,5 +223,6 @@ class ListPostForAuthor(GenericAPIView,mixins.ListModelMixin):
           else:
                return Post.objects.all()
 
+     @swagger_auto_schema(operation_summary='List posts by the username given')
      def get(self,request,*args,**kwargs):
           return self.list(request,*args,**kwargs)
