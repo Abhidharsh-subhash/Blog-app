@@ -84,8 +84,8 @@ class listcreatepost(GenericAPIView,
                     mixins.ListModelMixin,
                     mixins.CreateModelMixin):
      serializer_class = PostSerializer
-     permission_classes=[ReadOnly]
-     # permission_classes=[IsAuthenticatedOrReadOnly]#when we use this we dont need to be authenticated for reading the data's.
+     # permission_classes=[ReadOnly]
+     permission_classes=[IsAuthenticatedOrReadOnly]#when we use this we dont need to be authenticated for reading the data's.
      queryset = Post.objects.all()
 
      #custom mixin hook for create method
